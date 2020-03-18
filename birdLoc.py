@@ -3,26 +3,29 @@
 import maya.cmds as cmds
 
 def locators():
-    locGrp = cmds.group(n='Locators', em=True)
+    locGrp = cmds.group(n='Locators_Left', em=True)
     root = cmds.spaceLocator(n='loc_0')
     cmds.move(0,3,0)
     cmds.scale(.5,.5,.5)
-    cmds.parent(root, locGrp)
+    cmds.parent(locGrp, root)
     for i in range(6):
         l = cmds.spaceLocator(n='loc_'+str(i+1))
         cmds.move(.4+(i/3.0), 3+(i/9.0), i/10.0)
         cmds.scale(.2,.2,.2)
-        cmds.parent(l,locGrp)
+        cmds.parent(l, locGrp)
     tip=cmds.spaceLocator(n='loc_7')
     cmds.move(4.6, 2.6, 0)
     cmds.parent(tip, locGrp)
+    cmds.select(locGrp)
+    cmds.duplicate(n='Locators_Right',rr=True, rc=True)
+    cmds.scale(-2,2,2)
     print 'locators created'
     
 def createRig():
     master = cmds.circle(nr=(0,1,0), c=(0,0,0),  radius=2, name='Ctrl_Master')	
     
     jntGrp=cmds.group(n='Joints',em=True)
-    locs = cmds.ls('loc_*', type='transform')
+    locs = cmds.ls('loc*', type='transform')
     jnts = []
     ctrls = []
 	
@@ -30,9 +33,8 @@ def createRig():
         lPos = cmds.xform(lc, q=True, t=True, ws=True)
         j=cmds.joint(radius=.5, p=lPos, name='jnt_'+str(i))
         jnts.append(j)
-    
-    #cmds.select('jnt_1')
-    #cmds.mirrorJoint(myz=True, mb=True)
+        if i == 8:
+            cmds.parent(j, 'jnt_0')
     
     cmds.select('jnt_0')
     cmds.joint(e=True, ch=True, oj='xyz', secondaryAxisOrient='yup')
@@ -47,8 +49,12 @@ def createRig():
     	cmds.makeIdentity(apply=True, t=1, s=1)
     	if i == 0:
     		cmds.parent(ctrl, master)
+		
     	else:
     		cmds.parent(ctrl, 'ctrl_'+str(i-1))
+    		
+        if i == 8:
+		    cmds.parent(ctrl, 'ctrl_0')
 	cmds.parentConstraint(ctrl, j, mo=True)
 
 def BindSkin():
