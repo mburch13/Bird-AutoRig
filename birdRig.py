@@ -23,7 +23,6 @@ class Rig():
         cmds.showWindow()
         
     def clearScene(self, void):
-		cmds.delete('Joints')
 		cmds.delete('ctrl*')
 		print 'Scene Clearded'
 		
