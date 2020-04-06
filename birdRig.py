@@ -3,6 +3,7 @@ import birdLoc as loc
 import birdJoints as jnts
 import birdAnim as anim
 
+#reload files to allow changes to be added
 loc = reload(loc)
 jnts = reload(jnts)
 anim = reload(anim)
@@ -10,8 +11,9 @@ anim = reload(anim)
 class Rig():
     def __init__(self):
     	self.BuildUI()
-	
+
     def BuildUI(self):
+        #create GUI window
         cmds.window("Bird Rig")
         cmds.rowColumnLayout(nc = 1, adjustableColumn = True)
 
@@ -21,9 +23,9 @@ class Rig():
         cmds.button('Animate Character', w=200, c='anim.birdAnim()')
         cmds.button('Clear', w=200, c=self.clearScene)
         cmds.showWindow()
-        
+
     def clearScene(self, void):
 		cmds.delete('ctrl*')
 		print 'Scene Clearded'
-		
+
 Rig()
